@@ -33,6 +33,7 @@ venv.bak/
 
 # ChromaDB
 .chroma/
+chroma/
 
 # Workspace directory
 workspace/

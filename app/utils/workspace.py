@@ -10,12 +10,20 @@ logger = logging.getLogger(__name__)
 def is_safe_path(path: str) -> bool:
     """Check if the path is safe to write to (within workspace directory)."""
     try:
-        # Resolve path and check if it's within workspace
-        resolved_path = Path(settings.workspace_dir).resolve() / Path(path).name
+        # Resolve workspace directory
         workspace_path = Path(settings.workspace_dir).resolve()
         
-        # Check if resolved path starts with workspace path
-        return str(resolved_path).startswith(str(workspace_path))
+        # Create full path and resolve it
+        full_path = (workspace_path / path).resolve()
+        
+        # Check if resolved path is within workspace
+        try:
+            full_path.relative_to(workspace_path)
+            return True
+        except ValueError:
+            # Path is outside workspace directory
+            return False
+            
     except Exception as e:
         logger.warning(f"Path safety check failed for {path}: {e}")
         return False
